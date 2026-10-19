@@ -37,6 +37,12 @@ class ReplayTests(unittest.TestCase):
         self.assertEqual(gateway.complete(REQ, "k1").text, "echo: hello world")
         self.assertEqual(provider.calls, 2)
 
+    def test_blank_key_is_rejected(self):
+        provider = FakeProvider()
+        with self.assertRaisesRegex(ValueError, "non-empty"):
+            Gateway(provider).complete(REQ, "  ")
+        self.assertEqual(provider.calls, 0)
+
     def test_entry_expires_after_ttl(self):
         now = [0.0]
         provider = FakeProvider()

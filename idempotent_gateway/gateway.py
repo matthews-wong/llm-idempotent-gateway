@@ -44,6 +44,8 @@ class Gateway:
         self._entries: dict[str, _Entry] = {}
 
     def complete(self, request: Request, idempotency_key: str) -> Response:
+        if not idempotency_key.strip():
+            raise ValueError("idempotency_key must be a non-empty string")
         digest = fingerprint(request)
         with self._lock:
             entry = self._entries.get(idempotency_key)
